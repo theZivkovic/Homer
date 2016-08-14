@@ -15,6 +15,7 @@ function(Model){
         var _scene = null;
         var _camera = null;
         var _light = null;
+        var _ground = null;
 
         self.initEverything = function() {
 
@@ -22,10 +23,8 @@ function(Model){
         	_initScene();
         	_initCamera();
         	_initLights();
-        	_initRandomMeshes();
+        	_initStaticMeshes();
         	_initRuntime();
-
-        	console.log(new Model());
         }
 
         var _initEngine  = function() {
@@ -42,22 +41,22 @@ function(Model){
 
         var _initCamera = function() {
 
-        	_camera = new BABYLON.ArcRotateCamera('mainCamera', 1.0, 1.0, 12, BABYLON.Vector3.Zero(), _scene);
+        	_camera = new BABYLON.ArcRotateCamera("mainCamera", 1.0, 1.0, 12, BABYLON.Vector3.Zero(), _scene);
         	_camera.attachControl(_renderCanvas, false);
         }
 
         var _initLights = function() {
 
-        	_light = new BABYLON.HemisphericLight('mainLight', new BABYLON.Vector3(0, 1, 0), _scene);
-        	_light.groundColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-
+        	_light = new BABYLON.PointLight("mainLight", new BABYLON.Vector3(0, 5, 0), _scene);
+			_light.diffuse = new BABYLON.Color3(0.5, 0.5, 0.5);
+			_light.specular = new BABYLON.Color3(1, 1, 1);
         }
 
-        var _initRandomMeshes = function(){
+        var _initStaticMeshes = function(){
 
-        	var mesh = BABYLON.Mesh.CreateBox('sampleCube', 3, _scene);
-        	mesh.material =  new BABYLON.StandardMaterial('sampleMaterial', _scene);
-			mesh.material.diffuseColor = new BABYLON.Color3(0.5, 1.0, 0.5);
+        	_ground = new BABYLON.Mesh.CreateGround("ground", 10, 10, 2, _scene);
+        	_ground.material = new BABYLON.StandardMaterial('sampleMaterial', _scene);
+			_ground.material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
         }
 
         var _initRuntime = function() {
