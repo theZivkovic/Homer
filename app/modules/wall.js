@@ -1,9 +1,10 @@
 define([], function(){
 
-	var Wall = function(startPoint2D, direction2D, wallLength, wallHeight, startDirectionToSide2D_dirSpace, endDirectionToSide2D_dirSpace, thicknessLeft, thicknessRight, scene) {
+	var Wall = function(wallID, startPoint2D, direction2D, wallLength, wallHeight, startDirectionToSide2D_dirSpace, endDirectionToSide2D_dirSpace, thicknessLeft, thicknessRight, scene) {
 
 		var self = this;
 
+		var _wallID = wallID;
 		var _startPoint2D = startPoint2D;
 		var _direction2D = direction2D;
 		var _wallLength = wallLength;
@@ -32,6 +33,54 @@ define([], function(){
 		var _topFrontLeftPoint = null;
 		var _topFrontRightPoint = null;
 
+		var _topPaths = null;
+		var _bottomPaths = null;
+		var _frontPaths = null;
+		var _rearPaths = null;
+		var _leftPaths = null;
+		var _rightPaths = null;
+
+		var _topRibbon = null;
+		var _bottomRibbon = null;
+		var _frontRibbon = null;
+		var _rearRibbon = null;
+		var _leftRibbon = null;
+		
+		function _initialize(){
+
+			// normalize input
+			_direction2D.normalize();
+			_startDirectionToSide2D_dirSpace.normalize();
+			_endDirectionToSide2D_dirSpace.normalize();
+
+			// initialize ribbons
+			_bottomRearLeftPoint = BABYLON.Vector3.Zero();
+			_bottomRearRightPoint = BABYLON.Vector3.Zero();
+			_bottomFrontLeftPoint = BABYLON.Vector3.Zero();
+			_bottomFrontRightPoint = BABYLON.Vector3.Zero();
+			_topRearLeftPoint = BABYLON.Vector3.Zero();
+			_topRearRightPoint = BABYLON.Vector3.Zero();
+			_topFrontLeftPoint = BABYLON.Vector3.Zero();
+			_topFrontRightPoint = BABYLON.Vector3.Zero();
+
+			_topPaths = [ [_topRearLeftPoint, _topFrontLeftPoint], [_topRearRightPoint, _topFrontRightPoint]];
+			_bottomPaths = [ [_bottomRearRightPoint, _bottomFrontRightPoint], [ _bottomRearLeftPoint, _bottomFrontLeftPoint]];
+			_frontPaths = [ [_bottomFrontRightPoint, _topFrontRightPoint], [_bottomFrontLeftPoint, _topFrontLeftPoint]];
+			_rearPaths = [ [_bottomRearLeftPoint, _topRearLeftPoint], [_bottomRearRightPoint, _topRearRightPoint]];
+			_leftPaths = [ [_bottomFrontLeftPoint, _topFrontLeftPoint], [_bottomRearLeftPoint, _topRearLeftPoint]];
+			_rightPaths = [ [_bottomRearRightPoint, _topRearRightPoint], [_bottomFrontRightPoint, _topFrontRightPoint]];
+
+			_topRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#topRibbon", _topPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_bottomRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#bottomRibbon", _bottomPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_frontRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#frontRibbon", _frontPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_rearRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#rearRibbon", _rearPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_leftRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#leftRibbon", _leftPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_rightRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#rightRibbon", _rightPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+
+			_updateEdgePoints();
+			_updateQuads();
+		}
+
 		function _calculateEdgeDirection(direction2D, side, directionToSide2D_dirSpace, wallThickness) {
 
 			var normalToDirection2D_groundSpace = new BABYLON.Vector2( -direction2D.y, direction2D.x);
@@ -56,85 +105,119 @@ define([], function(){
 			return endPoint;
 		}
 
-		self.updateQuads = function(){
+		function _updateQuads() {
 
-			if (_quadTopModified)
-				self.updateTopQuad();
-			if (_quadBottomModified)
-				self.updateBottomQuad();
-			if (_quadLeftModified)
-				self.updateLeftQuad();
-			if (_quadRightModified)
-				self.updateRightQuad();
-			if (_quadFrontModified)
-				self.updateFrontQuad();
-			if (_quadBackModified)
-				self.updateBackQuad();
+			if (_quadTopModified){
+				_updateTopQuad();
+				_quadTopModified = false;
+			}
+			if (_quadBottomModified){
+				_updateBottomQuad();
+				_quadBottomModified = false;
+			}
+			if (_quadLeftModified){
+				_updateLeftQuad();
+				_quadLeftModified = false;
+			}
+			if (_quadRightModified){
+				_updateRightQuad();
+				_quadRightModified = false;
+			}
+			if (_quadFrontModified){
+				_updateFrontQuad();
+				_quadFrontModified = false;
+			}
+			if (_quadBackModified){
+				_updateBackQuad();
+				_quadBackModified = false;
+			}
 		}
 
-		self.updateTopQuad = function(){
+		function _updateEdgePoints() {
 
 			var rearLeftPoint2D = _startPoint2D.add(_calculateEdgeDirection(_direction2D, "left", _startDirectionToSide2D_dirSpace, _thicknessLeft));
 			var frontLeftPoint2D = _endPoint().add(_calculateEdgeDirection(_direction2D, "left", _endDirectionToSide2D_dirSpace, _thicknessLeft));
 			var rearRightPoint2D = _startPoint2D.add(_calculateEdgeDirection(_direction2D, "right", _startDirectionToSide2D_dirSpace.negate(), _thicknessRight));
 			var frontRightPoint2D =  _endPoint().add(_calculateEdgeDirection(_direction2D, "right", _endDirectionToSide2D_dirSpace.negate(), _thicknessRight));
-		
-			console.log(rearLeftPoint2D);
-			console.log(frontLeftPoint2D);
-			console.log(rearRightPoint2D);
-			console.log(frontRightPoint2D);
 
-			_topRearLeftPoint = new BABYLON.Vector3(rearLeftPoint2D.x, _wallHeight, rearLeftPoint2D.y);
-			_topRearRightPoint = new BABYLON.Vector3(rearRightPoint2D.x, _wallHeight, rearRightPoint2D.y);
-			_topFrontLeftPoint = new BABYLON.Vector3(frontLeftPoint2D.x, _wallHeight, frontLeftPoint2D.y);
-			_topFrontRightPoint = new BABYLON.Vector3(frontRightPoint2D.x, _wallHeight, frontRightPoint2D.y);
-
-			_bottomRearLeftPoint = new BABYLON.Vector3(rearLeftPoint2D.x, 0.0, rearLeftPoint2D.y);
-			_bottomRearRightPoint = new BABYLON.Vector3(rearRightPoint2D.x, 0.0, rearRightPoint2D.y);
-			_bottomFrontLeftPoint = new BABYLON.Vector3(frontLeftPoint2D.x, 0.0, frontLeftPoint2D.y);
-			_bottomFrontRightPoint = new BABYLON.Vector3(frontRightPoint2D.x, 0.0, frontRightPoint2D.y);
-
-
-			var topPaths = [ [_topRearLeftPoint, _topFrontLeftPoint], [_topRearRightPoint, _topFrontRightPoint]];
-			var bottomPaths = [ [_bottomRearRightPoint, _bottomFrontRightPoint], [ _bottomRearLeftPoint, _bottomFrontLeftPoint]];
-			var frontPaths = [ [_bottomFrontRightPoint, _topFrontRightPoint], [_bottomFrontLeftPoint, _topFrontLeftPoint]];
-			var rearPaths = [ [_bottomRearLeftPoint, _topRearLeftPoint], [_bottomRearRightPoint, _topRearRightPoint]];
-			var leftPaths = [ [_bottomFrontLeftPoint, _topFrontLeftPoint], [_bottomRearLeftPoint, _topRearLeftPoint]];
-			var rightPaths = [ [_bottomRearRightPoint, _topRearRightPoint], [_bottomFrontRightPoint, _topFrontRightPoint]];
-
-			var topRibbon = BABYLON.Mesh.CreateRibbon("ribbon", topPaths, false, false, 0, _scene, false, BABYLON.Mesh.FRONTSIDE);
-			var bottomRibbon = BABYLON.Mesh.CreateRibbon("ribbon", bottomPaths, false, false, 0, _scene, false, BABYLON.Mesh.FRONTSIDE);
-			var frontRibbon = BABYLON.Mesh.CreateRibbon("ribbon", frontPaths, false, false, 0, _scene, false, BABYLON.Mesh.FRONTSIDE);
-			var rearRibbon = BABYLON.Mesh.CreateRibbon("ribbon", rearPaths, false, false, 0, _scene, false, BABYLON.Mesh.FRONTSIDE);
-			var leftRibbon = BABYLON.Mesh.CreateRibbon("ribbon", leftPaths, false, false, 0, _scene, false, BABYLON.Mesh.FRONTSIDE);
-			var rightRibbon = BABYLON.Mesh.CreateRibbon("ribbon", rightPaths, false, false, 0, _scene, false, BABYLON.Mesh.FRONTSIDE);
+			_topRearLeftPoint.copyFrom(new BABYLON.Vector3(rearLeftPoint2D.x, _wallHeight, rearLeftPoint2D.y));
+			_topRearRightPoint.copyFrom(new BABYLON.Vector3(rearRightPoint2D.x, _wallHeight, rearRightPoint2D.y));
+			_topFrontLeftPoint.copyFrom(new BABYLON.Vector3(frontLeftPoint2D.x, _wallHeight, frontLeftPoint2D.y));
+			_topFrontRightPoint.copyFrom(new BABYLON.Vector3(frontRightPoint2D.x, _wallHeight, frontRightPoint2D.y));
+			_bottomRearLeftPoint.copyFrom(new BABYLON.Vector3(rearLeftPoint2D.x, 0.0, rearLeftPoint2D.y));
+			_bottomRearRightPoint.copyFrom(new BABYLON.Vector3(rearRightPoint2D.x, 0.0, rearRightPoint2D.y));
+			_bottomFrontLeftPoint.copyFrom(new BABYLON.Vector3(frontLeftPoint2D.x, 0.0, frontLeftPoint2D.y));
+			_bottomFrontRightPoint.copyFrom(new BABYLON.Vector3(frontRightPoint2D.x, 0.0, frontRightPoint2D.y));
 		}
 
-		self.updateBottomQuad = function(){
-
+		function _updateTopQuad() {
+			_topRibbon = BABYLON.Mesh.CreateRibbon(null, _topPaths, null, null, null, null, null, null, _topRibbon);
 		}
 
-		self.updateLeftQuad = function(){
-
+		function _updateBottomQuad() {
+			_bottomRibbon = BABYLON.Mesh.CreateRibbon(null, _bottomPaths, null, null, null, null, null, null, _bottomRibbon);	
 		}
 
-		self.updateRightQuad = function(){
-
+		function _updateLeftQuad() {
+			_leftRibbon = BABYLON.Mesh.CreateRibbon(null, _leftPaths, null, null, null, null, null, null, _leftRibbon);
 		}
 
-		self.updateFrontQuad = function(){
-
+		function _updateRightQuad() {
+			_rightRibbon = BABYLON.Mesh.CreateRibbon(null, _rightPaths, null, null, null, null, null, null, _rightRibbon);
 		}
 
-		self.updateBackQuad = function(){
-
+		function _updateFrontQuad() {
+			_frontRibbon = BABYLON.Mesh.CreateRibbon(null, _frontPaths, null, null, null, null, null, null, _frontRibbon);
 		}
 
-		// initial step
-		_direction2D.normalize();
-		_startDirectionToSide2D_dirSpace.normalize();
-		_endDirectionToSide2D_dirSpace.normalize();
-		self.updateQuads();
+		function _updateBackQuad() {
+			_rearRibbon = BABYLON.Mesh.CreateRibbon(null, _rearPaths, null, null, null, null, null, null,_rearRibbon);
+		}
+
+		self.changeWallLength = function(newWallLength){
+
+			_wallLength = newWallLength;
+
+			_updateEdgePoints();
+
+			_quadFrontModified = true;
+			_quadLeftModified = true;
+			_quadRightModified = true;
+			_quadBottomModified = true;
+			_quadTopModified = true;
+
+			_updateQuads();
+		}
+
+		self.changeWallHeight = function(newWallHeight){
+
+			_wallHeight = newWallHeight;
+
+			_updateEdgePoints();
+
+			_quadTopModified = true;
+			_quadLeftModified = true;
+			_quadRightModified = true;
+			_quadFrontModified = true;
+			_quadBackModified = true;
+
+			_updateQuads();
+		}
+
+		self.changeColor = function(color){
+
+			var newMaterial = new BABYLON.StandardMaterial("material", scene);
+			newMaterial.diffuseColor = color;
+
+			_leftRibbon.material = newMaterial;
+			_rightRibbon.material = newMaterial;
+			_topRibbon.material = newMaterial;
+			_bottomRibbon.material = newMaterial;
+			_frontRibbon.material = newMaterial;
+			_rearRibbon.material = newMaterial;
+		}
+
+		_initialize();
 
 	}
 

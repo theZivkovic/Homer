@@ -48,7 +48,7 @@ function(Model, Wall){
 
         var _initLights = function() {
 
-        	_light = new BABYLON.PointLight("mainLight", new BABYLON.Vector3(0, 5, 0), _scene);
+        	_light = new BABYLON.PointLight("mainLight", new BABYLON.Vector3(0, 15, 15), _scene);
 			_light.diffuse = new BABYLON.Color3(0.5, 0.5, 0.5);
 			_light.specular = new BABYLON.Color3(1, 1, 1);
         }
@@ -59,8 +59,17 @@ function(Model, Wall){
         	_ground.material = new BABYLON.StandardMaterial('sampleMaterial', _scene);
 			_ground.material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 
-            var customWall = new Wall(new BABYLON.Vector2(0, 0), new BABYLON.Vector2(1, 0), 6.0, 4.0, new BABYLON.Vector2(1, 1), new BABYLON.Vector2(1, 1), 1.0, 1.0, _scene);
-            var customWall1 = new Wall(new BABYLON.Vector2(-5, -5), new BABYLON.Vector2(0, 1), 2.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(1, 1), 1.0, 1.0, _scene);
+            var customWall = new Wall("Prvi", new BABYLON.Vector2(0, 0), new BABYLON.Vector2(1, 0), 4.0, 4.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
+            var customWall1 = new Wall("Drugi", new BABYLON.Vector2(0, 5), new BABYLON.Vector2(1, 0), 4.0, 4.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
+            var customWall2 = new Wall("Treci", new BABYLON.Vector2(0, 10), new BABYLON.Vector2(1, 0), 4.0, 4.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
+
+            customWall.changeColor(new BABYLON.Color3(1, 0, 0));
+            customWall.changeWallHeight(10.0);
+
+            customWall2.changeColor(new BABYLON.Color3(0, 1, 0));
+
+
+            console.log(customWall);
         }
 
         var _initRuntime = function() {
