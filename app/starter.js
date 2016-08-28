@@ -1,10 +1,11 @@
 'use strict';
 
 define([
-	'src/model'
+	'src/model',
+    'src/wall'
 ],
 
-function(Model){
+function(Model, Wall){
 
      var Starter = function(){
 
@@ -54,9 +55,12 @@ function(Model){
 
         var _initStaticMeshes = function(){
 
-        	_ground = new BABYLON.Mesh.CreateGround("ground", 10, 10, 2, _scene);
+        	_ground = new BABYLON.Mesh.CreateGround("ground", 20, 20, 2, _scene);
         	_ground.material = new BABYLON.StandardMaterial('sampleMaterial', _scene);
 			_ground.material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+
+            var customWall = new Wall(new BABYLON.Vector2(0, 0), new BABYLON.Vector2(1, 0), 6.0, 4.0, new BABYLON.Vector2(1, 1), new BABYLON.Vector2(1, 1), 1.0, 1.0, _scene);
+            var customWall1 = new Wall(new BABYLON.Vector2(-5, -5), new BABYLON.Vector2(0, 1), 2.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(1, 1), 1.0, 1.0, _scene);
         }
 
         var _initRuntime = function() {
