@@ -13,6 +13,7 @@ define([], function(){
 		var _radius = radius;
 		var _scene = scene;
 		var _position = new BABYLON.Vector3(0.0, 0.0, 0.0);
+		var _directionVector = null;
 
 		var _circlePoints = new Array(CIRCLE_POINTS * 2);
 		var _circle = null;
@@ -156,10 +157,10 @@ define([], function(){
 				angleRadRounded = Math.floor(numberOfMeasuresInAngle) * meauseAngle;
 
 			// recalculate direction vector
-			directionVector = new BABYLON.Vector3(Math.cos(angleRadRounded), 0.0, Math.sin(angleRadRounded));
+			_directionVector = new BABYLON.Vector3(Math.cos(angleRadRounded), 0.0, Math.sin(angleRadRounded));
 
 			// calculate new direction point
-			var newEndPoint = beginPoint.add(directionVector.scale(_radius * 1.1));
+			var newEndPoint = beginPoint.add(_directionVector.scale(_radius * 1.1));
 
 			// turn angles into degress
 			_angle = angleRadRounded * 180 / Math.PI;
@@ -169,8 +170,12 @@ define([], function(){
 			_updateAngleText();
 		}
 
-		self.getPosition = function(){
-			return _position;
+		self.getPositionGroundSpace = function(){
+			return new BABYLON.Vector2(_position.x, _position.z);
+		}
+
+		self.getDirectionVectorGroundSpace = function(){
+			return new BABYLON.Vector2(_directionVector.x, _directionVector.z);
 		}
 
 		self.showDirectionLine = function(show){

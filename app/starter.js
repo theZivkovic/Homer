@@ -2,12 +2,10 @@
 
 define([
 	'src/model/model',
-    'src/states/interactionStateManager',
-    'src/states/angleChoosingState',
-    'src/states/lengthChoosingState'
+    'src/wallBuildingManager'
 ],
 
-function(Model, InteractionStateManager, AngleChoosingState, LengthChoosingState){
+function(Model, WallBuildingManager){
 
      var Starter = function(){
 
@@ -21,8 +19,7 @@ function(Model, InteractionStateManager, AngleChoosingState, LengthChoosingState
         var _ground = null;
         var _model = null;
         var _interactionStateManager = null;
-        //var _angleChoosingState = null;
-        var _lengthChoosingState = null
+        var _wallBuildingManager = null;
 
         self.initEverything = function() {
 
@@ -33,9 +30,7 @@ function(Model, InteractionStateManager, AngleChoosingState, LengthChoosingState
         	_initStaticMeshes();
         	_initRuntime();
 
-            _interactionStateManager = new InteractionStateManager();
-            //_angleChoosingState = new AngleChoosingState(_scene);
-            _lengthChoosingState = new LengthChoosingState(new BABYLON.Vector2(5, 5), new BABYLON.Vector2(1, 0), _scene);
+            _wallBuildingManager = new WallBuildingManager(_scene);
         }
 
         var _initEngine  = function() {
@@ -79,21 +74,6 @@ function(Model, InteractionStateManager, AngleChoosingState, LengthChoosingState
 
         }
 
-
-        var _handleMouseDown = function(mouseDownPoint2D){
-                //_angleChoosingState.handleCenterPicking(mouseDownPoint2D);
-        }
-
-        var _handleMouseUp = function(mouseDownPoint2D, mouseUpPoint2D){
-                //_angleChoosingState.handleFinishChosing(mouseDownPoint2D, mouseUpPoint2D);
-                _lengthChoosingState.handleFinishResizing(mouseUpPoint2D);
-        }
-
-        var _handleMouseMove = function(mouseMovePoint2D) {
-             //_angleChoosingState.handleRadiusChange(mouseMovePoint2D);
-             _lengthChoosingState.handleWallResizing(mouseMovePoint2D);
-        }
-
         var _initRuntime = function() {
 
         	_engine.runRenderLoop(function(){
@@ -105,15 +85,15 @@ function(Model, InteractionStateManager, AngleChoosingState, LengthChoosingState
 	        });
 
             window.addEventListener("mousedown", function(event){
-                _interactionStateManager.handleMouseDown(event, _scene, _handleMouseDown);
+                _wallBuildingManager.handleMouseDown(event);
             });
 
             window.addEventListener("mouseup", function(event){
-                 _interactionStateManager.handleMouseUp(event, _scene, _handleMouseUp);
+                 _wallBuildingManager.handleMouseUp(event);
             });
 
             window.addEventListener("mousemove", function(event){
-                 _interactionStateManager.handleMouseMove(event, _scene, _handleMouseMove);
+                 _wallBuildingManager.handleMouseMove(event);
             });
         }
 
