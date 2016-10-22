@@ -52,7 +52,6 @@ define([
 				handleMouseUp: function(event){
 
 					this._angleChooserMesh.showText(false);
-					this._angleChooserMesh.showChooser(false);
 					self._wallBegin_groundSpace = this._angleChooserMesh.getPositionGroundSpace();
 					self._wallDirection_groundSpace  = this._angleChooserMesh.getDirectionVectorGroundSpace();
 					_changeState(_states.LENGTH_CHOOSING_STATE);
@@ -88,7 +87,7 @@ define([
 					self._wall.changeWallLength(wallLength);
 				},
 
-				handleMouseUp: function(event){
+				handleMouseUp: function(event) {
 					_changeState(_states.HEIGHT_CHOOSING_STATE);
 				}
 			},
@@ -96,7 +95,8 @@ define([
 			HEIGHT_CHOOSING_STATE: {
 
 				enter: function() {
-					this._initialPointerY = _scene.pointerY;
+					console.log("JJJJ");
+					console.log(self._wall.getWallEndGroundSpace());
 				},
 
 				exit: function(){
@@ -109,7 +109,8 @@ define([
 
 				handleMouseMove: function(event){
 
-					var newWallHeight = (this._initialPointerY - _scene.pointerY) / 10.0;
+					var pickResult = _scene.pick(_scene.pointerX, _scene.pointerY);
+					var newWallHeight = -(_scene.pointerY - window.innerHeight / 2.0) / 5.0;
 					var clampedWallHeight = newWallHeight <= 0.1 ? 0.1 : newWallHeight > 10 ? 10 : newWallHeight;
 					self._wall.changeWallHeight(clampedWallHeight);
 				},

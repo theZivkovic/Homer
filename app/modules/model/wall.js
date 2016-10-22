@@ -217,6 +217,10 @@ define([], function(){
 			_rearRibbon.material = newMaterial;
 		}
 
+		self.getWallEndGroundSpace = function(){
+			return _startPoint2D.add(_direction2D.scale(_wallLength));
+		}
+
 		_initialize();
 
 	}
