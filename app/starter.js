@@ -3,10 +3,11 @@
 define([
 	'src/model/model',
     'src/states/interactionStateManager',
-    'src/states/angleChoosingState'
+    'src/states/angleChoosingState',
+    'src/states/lengthChoosingState'
 ],
 
-function(Model, InteractionStateManager, AngleChoosingState){
+function(Model, InteractionStateManager, AngleChoosingState, LengthChoosingState){
 
      var Starter = function(){
 
@@ -20,7 +21,8 @@ function(Model, InteractionStateManager, AngleChoosingState){
         var _ground = null;
         var _model = null;
         var _interactionStateManager = null;
-        var _angleChoosingState = null;
+        //var _angleChoosingState = null;
+        var _lengthChoosingState = null
 
         self.initEverything = function() {
 
@@ -32,7 +34,8 @@ function(Model, InteractionStateManager, AngleChoosingState){
         	_initRuntime();
 
             _interactionStateManager = new InteractionStateManager();
-            _angleChoosingState = new AngleChoosingState(_scene);
+            //_angleChoosingState = new AngleChoosingState(_scene);
+            _lengthChoosingState = new LengthChoosingState(new BABYLON.Vector2(5, 5), new BABYLON.Vector2(1, 0), _scene);
         }
 
         var _initEngine  = function() {
@@ -58,10 +61,6 @@ function(Model, InteractionStateManager, AngleChoosingState){
             _light = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(0, -1, 0), _scene);
             _light.diffuse = new BABYLON.Color3(.5, .5, .5);
             _light.specular = new BABYLON.Color3(1, 1, 1);
-
-            //_light = new BABYLON.PointLight("mainLight", new BABYLON.Vector3(0, 15, 15), _scene);
-			// _light.diffuse = new BABYLON.Color3(0.5, 0.5, 0.5);
-			// _light.specular = new BABYLON.Color3(1, 1, 1);
         }
 
         var _initStaticMeshes = function(){
@@ -82,15 +81,17 @@ function(Model, InteractionStateManager, AngleChoosingState){
 
 
         var _handleMouseDown = function(mouseDownPoint2D){
-                _angleChoosingState.handleCenterPicking(mouseDownPoint2D);
+                //_angleChoosingState.handleCenterPicking(mouseDownPoint2D);
         }
 
         var _handleMouseUp = function(mouseDownPoint2D, mouseUpPoint2D){
-                _angleChoosingState.handleFinishChosing(mouseDownPoint2D, mouseUpPoint2D);
+                //_angleChoosingState.handleFinishChosing(mouseDownPoint2D, mouseUpPoint2D);
+                _lengthChoosingState.handleFinishResizing(mouseUpPoint2D);
         }
 
         var _handleMouseMove = function(mouseMovePoint2D) {
-             _angleChoosingState.handleRadiusChange(mouseMovePoint2D);
+             //_angleChoosingState.handleRadiusChange(mouseMovePoint2D);
+             _lengthChoosingState.handleWallResizing(mouseMovePoint2D);
         }
 
         var _initRuntime = function() {

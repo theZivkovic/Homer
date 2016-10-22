@@ -22,7 +22,7 @@ define(['src/model/angleChooserMesh'], function(AngleChooserMesh){
 		}
 
 		self.handleFinishChosing = function(mouseDownPoint2D, mouseUpPoint2D) {
-			
+			_angleChooserMesh.showText(false);
 		}
 	}
 

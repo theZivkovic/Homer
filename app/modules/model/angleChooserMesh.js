@@ -144,25 +144,25 @@ define([], function(){
 			var angleRad = Math.atan2(directionVector.z, directionVector.x);
 			if (angleRad < 0) angleRad += 2 * Math.PI;
 			if (angleRad >= 2 * Math.PI) angleRad -= 2 * MAth.PI;
-			_angle = angleRad * 180 / Math.PI;
-
+			
 			// round the angle to the nearest measurement point
 			var meauseAngle = 2 * Math.PI / MEASUREMENT_POINTS;
 			var numberOfMeasuresInAngle = angleRad / meauseAngle;
 			var decimalPart = numberOfMeasuresInAngle % 1;
+			var angleDegRounded;
 			if (decimalPart >= 0.5)
-				_angle = Math.ceil(numberOfMeasuresInAngle) * meauseAngle;
+				angleRadRounded = Math.ceil(numberOfMeasuresInAngle) * meauseAngle;
 			else
-				_angle = Math.floor(numberOfMeasuresInAngle) * meauseAngle;
+				angleRadRounded = Math.floor(numberOfMeasuresInAngle) * meauseAngle;
 
 			// recalculate direction vector
-			directionVector = new BABYLON.Vector3(Math.cos(_angle), 0.0, Math.sin(_angle));
+			directionVector = new BABYLON.Vector3(Math.cos(angleRadRounded), 0.0, Math.sin(angleRadRounded));
 
 			// calculate new direction point
 			var newEndPoint = beginPoint.add(directionVector.scale(_radius * 1.1));
 
 			// turn angles into degress
-			_angle = _angle * 180 / Math.PI;
+			_angle = angleRadRounded * 180 / Math.PI;
 
 			// update/create direction line
 			_directionLine = new BABYLON.Mesh.CreateLines("dirLine", [beginPoint, newEndPoint], _scene, true, _directionLine);
