@@ -70,12 +70,12 @@ define([], function(){
 			_leftPaths = [ [_bottomFrontLeftPoint, _topFrontLeftPoint], [_bottomRearLeftPoint, _topRearLeftPoint]];
 			_rightPaths = [ [_bottomRearRightPoint, _topRearRightPoint], [_bottomFrontRightPoint, _topFrontRightPoint]];
 
-			_topRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#topRibbon", _topPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
-			_bottomRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#bottomRibbon", _bottomPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
-			_frontRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#frontRibbon", _frontPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
-			_rearRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#rearRibbon", _rearPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
-			_leftRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#leftRibbon", _leftPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
-			_rightRibbon = BABYLON.Mesh.CreateRibbon(_wallID + "#rightRibbon", _rightPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_topRibbon = BABYLON.Mesh.CreateRibbon("topRibbon#" + _wallID, _topPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_bottomRibbon = BABYLON.Mesh.CreateRibbon("bottomRibbon#" + _wallID, _bottomPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_frontRibbon = BABYLON.Mesh.CreateRibbon("frontRibbon#" + _wallID, _frontPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_rearRibbon = BABYLON.Mesh.CreateRibbon("rearRibbon#" + _wallID, _rearPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_leftRibbon = BABYLON.Mesh.CreateRibbon("leftRibbon#" + _wallID, _leftPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
+			_rightRibbon = BABYLON.Mesh.CreateRibbon("rightRibbon#" + _wallID, _rightPaths, false, false, 0, _scene, true, BABYLON.Mesh.FRONTSIDE);
 
 			_updateEdgePoints();
 			_updateQuads();
@@ -152,26 +152,32 @@ define([], function(){
 
 		function _updateTopQuad() {
 			_topRibbon = BABYLON.Mesh.CreateRibbon(null, _topPaths, null, null, null, null, null, null, _topRibbon);
+			_topRibbon.refreshBoundingInfo();
 		}
 
 		function _updateBottomQuad() {
-			_bottomRibbon = BABYLON.Mesh.CreateRibbon(null, _bottomPaths, null, null, null, null, null, null, _bottomRibbon);	
+			_bottomRibbon = BABYLON.Mesh.CreateRibbon(null, _bottomPaths, null, null, null, null, null, null, _bottomRibbon);
+			_bottomRibbon.refreshBoundingInfo();
 		}
 
 		function _updateLeftQuad() {
 			_leftRibbon = BABYLON.Mesh.CreateRibbon(null, _leftPaths, null, null, null, null, null, null, _leftRibbon);
+			_leftRibbon.refreshBoundingInfo();
 		}
 
 		function _updateRightQuad() {
 			_rightRibbon = BABYLON.Mesh.CreateRibbon(null, _rightPaths, null, null, null, null, null, null, _rightRibbon);
+			_rightRibbon.refreshBoundingInfo();
 		}
 
 		function _updateFrontQuad() {
 			_frontRibbon = BABYLON.Mesh.CreateRibbon(null, _frontPaths, null, null, null, null, null, null, _frontRibbon);
+			_frontRibbon.refreshBoundingInfo();
 		}
 
 		function _updateBackQuad() {
 			_rearRibbon = BABYLON.Mesh.CreateRibbon(null, _rearPaths, null, null, null, null, null, null,_rearRibbon);
+			_rearRibbon.refreshBoundingInfo();
 		}
 
 		self.changeWallLength = function(newWallLength){

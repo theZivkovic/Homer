@@ -7,9 +7,9 @@ requirejs.config({
 		'src'		: '/app/modules',
 		'starter'	: '/app/starter',
 		'handful'	: '/node_modules/hand/hand',
-		'babylon'	: '/lib/babylonjs/dist/babylon.2.4',
-		'oimo'		: '/lib/babylonjs/dist/Oimo',
-		'cannon'	: '/lib/babylonjs/dist/cannon',
+		'babylon'	: '/lib/babylonjs/dist/preview release/babylon',
+		'oimo'		: '/lib/babylonjs/dist/preview release/Oimo',
+		'cannon'	: '/lib/babylonjs/dist/preview release/cannon',
 	},
 	shim: {
 		'cannon'	: ['handful'],

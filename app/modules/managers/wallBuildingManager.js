@@ -14,6 +14,31 @@ define([
 
 		var _states = {
 
+			IDLE_STATE: {
+
+				enter: function() {
+					
+				},
+
+				exit: function(){
+					
+				},
+
+				handleMouseDown: function(event){
+					var pickResult = _scene.pick(_scene.pointerX, _scene.pointerY);
+					console.log(pickResult.pickedMesh.name);
+				},
+
+				handleMouseMove: function(event){
+
+					
+				},
+
+				handleMouseUp: function(event){
+
+				}
+			},
+
 			ANGLE_CHOOSING_STATE: {
 
 				enter: function() {
@@ -154,7 +179,7 @@ define([
 		}
 
 		var _currentState = null;
-		_changeState(_states.ANGLE_CHOOSING_STATE);
+		_changeState(_states.IDLE_STATE);
 	}
 
 	return WallBuildingManager;
