@@ -26,7 +26,25 @@ define([
 
 				handleMouseDown: function(event){
 					var pickResult = _scene.pick(_scene.pointerX, _scene.pointerY);
-					console.log(pickResult.pickedMesh.name);
+					var pickedMesh = pickResult.pickedMesh;
+
+					if (pickedMesh.name.startsWith("frontRibbon") || pickedMesh.name.startsWith("rearRibbon"))
+					{
+						var quadVertexBuffer = pickedMesh.geometry._vertexBuffers.position._buffer._data;
+						var quadBottomCenter = new BABYLON.Vector2((quadVertexBuffer[0] + quadVertexBuffer[6]) / 2.0, (quadVertexBuffer[2] + quadVertexBuffer[8])/2.0);
+						self._wallBegin_groundSpace = quadBottomCenter;
+						_changeState(_states.ANGLE_CHOOSING_STATE);	
+					}
+					else if (pickedMesh.name == "ground")
+					{
+						self._wallBegin_groundSpace = new BABYLON.Vector2(pickResult.pickedPoint.x, pickResult.pickedPoint.z);
+						_changeState(_states.ANGLE_CHOOSING_STATE);	
+					}
+					else
+					{
+						console.log("SOMETHING ELSE...");
+					}
+
 				},
 
 				handleMouseMove: function(event){
@@ -43,27 +61,22 @@ define([
 
 				enter: function() {
 					this._angleChooserMesh = new AngleChooserMesh(5, _scene);
-					this._angleChooserMesh.showChooser(false);
-					this._angleChooserMesh.showText(false);
-					this._mouseDownPoint_groundSpace = null;
+					this._angleChooserMesh.showChooser(true);
+					this._angleChooserMesh.showText(true);
+					this._angleChooserMesh.setPosition(new BABYLON.Vector3(self._wallBegin_groundSpace.x, 0.0, self._wallBegin_groundSpace.y));
 				},
 
 				exit: function(){
-					this._mouseDownPoint_groundSpace = null;
+					
 				},
 
 				handleMouseDown: function(event){
-					var pickResult = _scene.pick(_scene.pointerX, _scene.pointerY);
-					var pickedPoint = pickResult.pickedPoint;
-					this._mouseDownPoint_groundSpace = new BABYLON.Vector2(pickedPoint.x, pickedPoint.z);
-					this._angleChooserMesh.setPosition(pickedPoint);
-					this._angleChooserMesh.showChooser(true);
-					this._angleChooserMesh.showDirectionLine(false);
+					// do nothinh
 				},
 
 				handleMouseMove: function(event){
 
-					if (!this._mouseDownPoint_groundSpace)
+					if (!self._wallBegin_groundSpace)
 						return;
 
 					var pickResult = _scene.pick(_scene.pointerX, _scene.pointerY);
@@ -78,7 +91,6 @@ define([
 
 					this._angleChooserMesh.showText(false);
 					this._angleChooserMesh.showChooser(false);
-					self._wallBegin_groundSpace = this._angleChooserMesh.getPositionGroundSpace();
 					self._wallDirection_groundSpace  = this._angleChooserMesh.getDirectionVectorGroundSpace();
 					_changeState(_states.LENGTH_CHOOSING_STATE);
 				}
@@ -141,7 +153,7 @@ define([
 
 				handleMouseUp: function(event){
 					
-					_changeState(_states.ANGLE_CHOOSING_STATE);
+					_changeState(_states.IDLE_STATE);
 				}
 			}
 		}
