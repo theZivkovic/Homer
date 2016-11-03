@@ -1,13 +1,14 @@
 define([
-	'src/model/AngleChooserMesh',
+	'src/model/fullAngleChooser',
 	'src/model/wall'
-	], function(AngleChooserMesh, Wall){
+	], function(FullAngleChooser, Wall){
 
 	var WallBuildingManager = function(scene){
 
 		var self = this;
 		self._wallBegin_groundSpace = null;
 		self._wallDirection_groundSpace = null;
+		self._angleChooserDirection_groundSpace = null;
 		self._wall = null;
 
 		var _scene = scene;
@@ -32,12 +33,18 @@ define([
 					{
 						var quadVertexBuffer = pickedMesh.geometry._vertexBuffers.position._buffer._data;
 						var quadBottomCenter = new BABYLON.Vector2((quadVertexBuffer[0] + quadVertexBuffer[6]) / 2.0, (quadVertexBuffer[2] + quadVertexBuffer[8])/2.0);
+						var quadLineDirection = new BABYLON.Vector2(quadVertexBuffer[6] - quadVertexBuffer[0], quadVertexBuffer[8] - quadVertexBuffer[2]);
+						quadLineDirection.normalize();
+						var quadLineNormalLeft = new BABYLON.Vector2(quadLineDirection.y, -quadLineDirection.x);
+
 						self._wallBegin_groundSpace = quadBottomCenter;
+						self._angleChooserDirection_groundSpace = quadLineNormalLeft;
 						_changeState(_states.ANGLE_CHOOSING_STATE);	
 					}
 					else if (pickedMesh.name == "ground")
 					{
 						self._wallBegin_groundSpace = new BABYLON.Vector2(pickResult.pickedPoint.x, pickResult.pickedPoint.z);
+						self._angleChooserDirection_groundSpace = new BABYLON.Vector2(1, 0);
 						_changeState(_states.ANGLE_CHOOSING_STATE);	
 					}
 					else
@@ -60,7 +67,7 @@ define([
 			ANGLE_CHOOSING_STATE: {
 
 				enter: function() {
-					this._angleChooserMesh = new AngleChooserMesh(5, _scene);
+					this._angleChooserMesh = new FullAngleChooser(5, self._angleChooserDirection_groundSpace, Math.PI, _scene);
 					this._angleChooserMesh.showChooser(true);
 					this._angleChooserMesh.showText(true);
 					this._angleChooserMesh.setPosition(new BABYLON.Vector3(self._wallBegin_groundSpace.x, 0.0, self._wallBegin_groundSpace.y));
@@ -83,7 +90,7 @@ define([
 					var pickedPoint = pickResult.pickedPoint;
 					var pointOnCircle = pickedPoint;
 					this._angleChooserMesh.setDirectionLine(pointOnCircle);
-					this._angleChooserMesh.showDirectionLine(true);
+					this._angleChooserMesh.showDirectionLines(true);
 					this._angleChooserMesh.showText(true);
 				},
 
@@ -91,6 +98,7 @@ define([
 
 					this._angleChooserMesh.showText(false);
 					this._angleChooserMesh.showChooser(false);
+					this._angleChooserMesh.showDirectionLines(false);
 					self._wallDirection_groundSpace  = this._angleChooserMesh.getDirectionVectorGroundSpace();
 					_changeState(_states.LENGTH_CHOOSING_STATE);
 				}

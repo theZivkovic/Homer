@@ -68,10 +68,10 @@ function(Model, WallBuildingManager){
             _model = new Model();
             _model.addWall("Prvi", new BABYLON.Vector2(0, 0), new BABYLON.Vector2(1, 0), 9.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
             _model.addWall("Drugi", new BABYLON.Vector2(1, 1), new BABYLON.Vector2(0, 1), 5.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
-            _model.addWall("Treci", new BABYLON.Vector2(-5,5), new BABYLON.Vector2(0, 1), 9.0, 2.0, new BABYLON.Vector2(1, 1), new BABYLON.Vector2(1, 1), 1.0, 1.0, _scene);
-            _model.addWall("Cet", new BABYLON.Vector2(-10,5), new BABYLON.Vector2(0, 1), 9.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(1, 1), 1.0, 1.0, _scene);
-            _model.addWall("Pet", new BABYLON.Vector2(-15,5), new BABYLON.Vector2(0, 1), 9.0, 4.0, new BABYLON.Vector2(1, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
-
+            _model.addWall("Treci", new BABYLON.Vector2(-5,5), new BABYLON.Vector2(0, 1), 9.0, 2.0, new BABYLON.Vector2(1, 1), new BABYLON.Vector2(1, 1), 0.7, 0.7, _scene);
+            _model.addWall("Cet", new BABYLON.Vector2(-10,5), new BABYLON.Vector2(0, 1), 9.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(1, 1), 0.7, 0.7, _scene);
+            _model.addWall("Pet", new BABYLON.Vector2(-15,5), new BABYLON.Vector2(0, 1), 9.0, 4.0, new BABYLON.Vector2(1, 1), new BABYLON.Vector2(0, 1), 0.7, 0.7, _scene);
+             _model.addWall("Sest", new BABYLON.Vector2(10,-10), new BABYLON.Vector2(1, 1), 9.0, 4.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
         }
 
         var _initRuntime = function() {
