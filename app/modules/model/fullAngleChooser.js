@@ -3,7 +3,7 @@ define(['src/utils/angleUtil'], function(AngleUtil){
 	var FullAngleChooser = function(radius, xAxisDirection_groundSpace, angleOffset_rad, scene){
 		
 		var CIRCLE_DELTA_ANGLE_RAD = Math.PI / 90.0;
-		var MEAUREMENTS_DELTA_ANGLE_RAD = Math.PI / 6;
+		var MEAUREMENTS_DELTA_ANGLE_RAD = Math.PI / 36;
 		var OUTER_INNER_RADIUS_RADIO = 1.1;
 
 		var _xAxisDirection_groundSpace = xAxisDirection_groundSpace; 

@@ -1,7 +1,8 @@
 define([
 	'src/model/fullAngleChooser',
-	'src/model/wall'
-	], function(FullAngleChooser, Wall){
+	'src/model/wall',
+	'src/utils/angleUtil'
+	], function(FullAngleChooser, Wall, AngleUtil){
 
 	var WallBuildingManager = function(scene){
 
@@ -9,6 +10,8 @@ define([
 		self._wallBegin_groundSpace = null;
 		self._wallDirection_groundSpace = null;
 		self._angleChooserDirection_groundSpace = null;
+		self._angleChooserAngle = 0.0;
+		self._previousSideDirection = null;
 		self._wall = null;
 
 		var _scene = scene;
@@ -37,14 +40,17 @@ define([
 						quadLineDirection.normalize();
 						var quadLineNormalLeft = new BABYLON.Vector2(quadLineDirection.y, -quadLineDirection.x);
 
+						self._previousSideDirection = quadLineDirection;
 						self._wallBegin_groundSpace = quadBottomCenter;
 						self._angleChooserDirection_groundSpace = quadLineNormalLeft;
+						self._angleChooserAngle = Math.PI / 2;
 						_changeState(_states.ANGLE_CHOOSING_STATE);	
 					}
 					else if (pickedMesh.name == "ground")
 					{
 						self._wallBegin_groundSpace = new BABYLON.Vector2(pickResult.pickedPoint.x, pickResult.pickedPoint.z);
 						self._angleChooserDirection_groundSpace = new BABYLON.Vector2(1, 0);
+						self._angleChooserAngle = Math.PI;
 						_changeState(_states.ANGLE_CHOOSING_STATE);	
 					}
 					else
@@ -66,8 +72,14 @@ define([
 
 			ANGLE_CHOOSING_STATE: {
 
+				_calculateVector2InVector1Space: function(vector1, vector2) {
+					var angle = Math.acos(BABYLON.Vector2.Dot(vector1, vector2));
+					var direction = AngleUtil.convertRadiansToDirectionVector2D(angle);
+					return direction;
+				},
+
 				enter: function() {
-					this._angleChooserMesh = new FullAngleChooser(5, self._angleChooserDirection_groundSpace, Math.PI, _scene);
+					this._angleChooserMesh = new FullAngleChooser(5, self._angleChooserDirection_groundSpace, self._angleChooserAngle, _scene);
 					this._angleChooserMesh.showChooser(true);
 					this._angleChooserMesh.showText(true);
 					this._angleChooserMesh.setPosition(new BABYLON.Vector3(self._wallBegin_groundSpace.x, 0.0, self._wallBegin_groundSpace.y));
@@ -100,6 +112,9 @@ define([
 					this._angleChooserMesh.showChooser(false);
 					this._angleChooserMesh.showDirectionLines(false);
 					self._wallDirection_groundSpace  = this._angleChooserMesh.getDirectionVectorGroundSpace();
+
+					var wallBeginSideDirection = this._calculateVector2InVector1Space(self._wallDirection_groundSpace, self._previousSideDirection);
+					self._wall = new Wall("aaa", self._wallBegin_groundSpace, self._wallDirection_groundSpace, 5, 2, wallBeginSideDirection, new BABYLON.Vector2(0, 1), 1, 1, _scene);
 					_changeState(_states.LENGTH_CHOOSING_STATE);
 				}
 			},
@@ -107,7 +122,7 @@ define([
 			LENGTH_CHOOSING_STATE: {
 
 				enter: function() {
-					self._wall = new Wall("aaa", self._wallBegin_groundSpace, self._wallDirection_groundSpace, 5, 2, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1, 1, _scene);
+					
 				},
 
 				exit: function(){
