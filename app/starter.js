@@ -2,10 +2,11 @@
 
 define([
 	'src/model/model',
-    'src/managers/wallBuildingManager'
+    'src/managers/wallBuildingManager',
+    'src/model/wall'
 ],
 
-function(Model, WallBuildingManager){
+function(Model, WallBuildingManager, Wall){
 
      var Starter = function(){
 
@@ -66,8 +67,12 @@ function(Model, WallBuildingManager){
             _ground.material.speculaColor = new BABYLON.Color3(0.7, 0.7, 0.7);
 
             _model = new Model();
-            _model.addWall("Prvi", new BABYLON.Vector2(0, 0), new BABYLON.Vector2(1, 0), 9.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
-            _model.addWall("Drugi", new BABYLON.Vector2(1, 1), new BABYLON.Vector2(0, 1), 5.0, 2.0, new BABYLON.Vector2(0, 1), new BABYLON.Vector2(0, 1), 1.0, 1.0, _scene);
+            // _model.addWall("Prvi", new BABYLON.Vector2(5, 0), new BABYLON.Vector2(0, 1), 20.0, 9.0, 2.0, _scene);
+            // _model.addWall("Drugi", new BABYLON.Vector2(0, 0), new BABYLON.Vector2(0, 1), 20.0, 9.0, 2.0, _scene);
+            // _model.addWall("Drugi", new BABYLON.Vector2(10, 0), new BABYLON.Vector2(0, 1), 20.0, 9.0, 2.0, _scene);
+
+            let wall = new Wall("aaaa", new BABYLON.Vector2(0,0), new BABYLON.Vector2(0,1), 20, 5, 2.0, _scene);
+            let wall1 = new Wall("bbbb", new BABYLON.Vector2(0,0), new BABYLON.Vector2(1,1), 20, 5, 2.0, _scene);
         }
 
         var _initRuntime = function() {
