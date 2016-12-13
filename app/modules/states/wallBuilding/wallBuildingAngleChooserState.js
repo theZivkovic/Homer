@@ -4,7 +4,7 @@ define(['src/model/fullAngleChooser'], function(FullAngleChooser){
 
 		var self = this;
 		var _mouseDownPoint_WorldSpace = input;
-		console.log(input);
+	
 		var _fullAngleChooser = new FullAngleChooser(5.0, new BABYLON.Vector2(1,0), Math.PI, scene);
 		_fullAngleChooser.setPosition(_mouseDownPoint_WorldSpace);
 

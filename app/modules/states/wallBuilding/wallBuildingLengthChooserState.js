@@ -5,7 +5,7 @@ define(['src/model/wall'], function(Wall){
 		var self = this;
 		var _wallDirection_GroundSpace = input.wallDirection;
 		var _wallStart_GroundSpace = input.wallStart;
-		var _wall = new Wall(0, _wallStart_GroundSpace, _wallDirection_GroundSpace, 10, 2, 2, scene);
+		var _wall = new Wall(_wallStart_GroundSpace, _wallDirection_GroundSpace, 10, 2, 2, scene);
 
 		self.handleMouseMove = function(event){
 

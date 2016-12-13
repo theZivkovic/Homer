@@ -1,21 +1,28 @@
 define([
+	'src/model/wall',
 	'src/states/wallBuilding/wallBuildingIdleState',
 	'src/states/wallBuilding/wallBuildingAngleChooserState',
 	'src/states/wallBuilding/wallBuildingLengthChooserState',
-	'src/states/wallBuilding/wallBuildingHeightChooserState'
-	], function(WallBuildingIdleState,
+	'src/states/wallBuilding/wallBuildingHeightChooserState',
+	'src/states/wallBuilding/wallBuildingAppendAngleChooserState'
+	], function(Wall,
+				WallBuildingIdleState,
 				WallBuildingAngleChooserState,
 				WallBuildingLengthChooserState,
-				WallBuildingHeightChooserState) {
+				WallBuildingHeightChooserState,
+				WallBuildingAppendAngleChooserState) {
 
-	var WallBuildingManager = function(scene){
+	var WallBuildingManager = function(addWallToTheModelCallback, getWallFromModelCallback, scene){
 
 		var self = this;
-		var _currentState = null;
+
 		var _scene = scene;
+		var _addWallToTheModelCallback = addWallToTheModelCallback;
+		var _getWallFromTheModelCallback = getWallFromModelCallback;
 		var _wallStartPoint_GroundSpace;
 		var _wallDirection_GroundSpace;
 		var _wall;
+		var _currentState = null;
 
 		self.handleMouseMove = function(event){
 			_currentState.handleMouseMove(event);
@@ -44,6 +51,17 @@ define([
 				if (pickedMesh.name == "ground") {
 					_wallStartPoint_GroundSpace = new BABYLON.Vector2(pickedPoint.x, pickedPoint.z);
 					_currentState = new WallBuildingAngleChooserState(pickedPoint, _scene, self.decideWhatsNext);
+				} 
+				else if (pickedMesh.name.startsWith("wall")) {
+					let pickedWall = getWallFromModelCallback(pickedMesh.name.split("#")[1]);
+					var pickedSideString = pickedWall.getPickedSide(pickedPoint);
+
+					var nextStateInput = {
+						wall: pickedWall,
+						side: pickedSideString
+					};
+
+					_currentState = new WallBuildingAppendAngleChooserState(nextStateInput, _scene, self.decideWhatsNext);
 				}
 			} 
 			else if (_currentState.getClassname() == "WallBuildingAngleChooserState"){
@@ -63,7 +81,19 @@ define([
 			}
 			else if (_currentState.getClassname() == "WallBuildingHeightChooserState"){
 
+				_addWallToTheModelCallback(_wall);
 				_currentState = new WallBuildingIdleState(null, _scene, self.decideWhatsNext);
+			} 
+			else if (_currentState.getClassname() == "WallBuildingAppendAngleChooserState"){
+
+				var wallJoint = stateOutput;
+
+				var nextStateInput = { 
+					wallDirection: wallJoint.getNewWallDirecitonGroundSpace(),
+					wallStart: wallJoint.getNewEndWallStartPointGroundSpace()
+				}
+
+				_currentState = new WallBuildingLengthChooserState(nextStateInput, _scene, self.decideWhatsNext);
 			}
 		}
 

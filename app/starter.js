@@ -31,7 +31,7 @@ function(Model, WallBuildingManager, Wall){
         	_initStaticMeshes();
         	_initRuntime();
 
-            _wallBuildingManager = new WallBuildingManager(_scene);
+            _wallBuildingManager = new WallBuildingManager(_model.addWall, _model.getWallByID, _scene);
         }
 
         var _initEngine  = function() {
@@ -67,12 +67,10 @@ function(Model, WallBuildingManager, Wall){
             _ground.material.speculaColor = new BABYLON.Color3(0.7, 0.7, 0.7);
 
             _model = new Model();
-            // _model.addWall("Prvi", new BABYLON.Vector2(5, 0), new BABYLON.Vector2(0, 1), 20.0, 9.0, 2.0, _scene);
-            // _model.addWall("Drugi", new BABYLON.Vector2(0, 0), new BABYLON.Vector2(0, 1), 20.0, 9.0, 2.0, _scene);
-            // _model.addWall("Drugi", new BABYLON.Vector2(10, 0), new BABYLON.Vector2(0, 1), 20.0, 9.0, 2.0, _scene);
-
-            let wall = new Wall("aaaa", new BABYLON.Vector2(0,0), new BABYLON.Vector2(0,1), 20, 5, 2.0, _scene);
-            let wall1 = new Wall("bbbb", new BABYLON.Vector2(0,0), new BABYLON.Vector2(1,1), 20, 5, 2.0, _scene);
+            let wall = new Wall(new BABYLON.Vector2(0,0), new BABYLON.Vector2(0,1), 20, 5, 2.0, _scene);
+            let wall1 = new Wall(new BABYLON.Vector2(0,0), new BABYLON.Vector2(1,1), 20, 5, 2.0, _scene);
+            _model.addWall(wall);
+            _model.addWall(wall1);
         }
 
         var _initRuntime = function() {
